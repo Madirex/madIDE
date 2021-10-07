@@ -1,7 +1,4 @@
-import com.formdev.flatlaf.FlatDarkLaf;
-import com.formdev.flatlaf.FlatLightLaf;
-import com.formdev.flatlaf.IntelliJTheme;
-import com.formdev.flatlaf.intellijthemes.FlatArcOrangeIJTheme;
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 
 import javax.swing.*;
 import java.awt.*;
@@ -91,7 +88,43 @@ public class Window extends JFrame {
         //Agregar los paneles
             //Barra superior
             JPanel barra = new JPanel();
-            barra.setLayout(new FlowLayout());
+            barra.setLayout(new BorderLayout());
+            barra.setPreferredSize(new Dimension(50, 25));
+
+            //Agregar texto de árbol
+            JTextArea treeText = new JTextArea();
+            treeText.setText("Test > Test2 > Test3"); //TODO: MODIFY
+            treeText.setEnabled(false);
+            barra.add(treeText,BorderLayout.WEST);
+
+            //BARRA DE ICONOS
+            JPanel barraIconos = new JPanel();
+            barraIconos.setLayout(new FlowLayout(FlowLayout.RIGHT, 15, 5));
+
+                //Agregar Icono build
+                Icon buildI = new FlatSVGIcon("images/build.svg");
+                JLabel buildL = new JLabel(buildI);
+                barraIconos.add(buildL);
+
+                //Agregar Icono guardar
+                Icon playI = new FlatSVGIcon("images/play.svg");
+                JLabel playL = new JLabel(playI);
+                barraIconos.add(playL);
+
+                //Agregar Icono debug
+                Icon debugI = new FlatSVGIcon("images/debug.svg");
+                JLabel debugL = new JLabel(debugI);
+                barraIconos.add(debugL);
+
+                //Agregar Icono stop
+                Icon stopI = new FlatSVGIcon("images/stop.svg");
+                JLabel stopL = new JLabel(stopI);
+                stopL.setEnabled(false); //Deshabilitar por defecto
+                barraIconos.add(stopL);
+
+            barra.add(barraIconos,BorderLayout.EAST);
+
+            //Agregar menú
             panel.add(barra, BorderLayout.NORTH);
 
             //Panel central IDE

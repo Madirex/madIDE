@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="11px"
+   height="14px"
+   viewBox="0 0 11 14"
+   version="1.1"
+   id="svg14"
+   sodipodi:docname="play.svg"
+   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)">
+  <metadata
+     id="metadata20">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>play_arrow</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs18" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     id="namedview16"
+     showgrid="false"
+     inkscape:zoom="13.125"
+     inkscape:cx="-25.178289"
+     inkscape:cy="19.810766"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g8" />
+  <!-- Generator: Sketch 52.5 (67469) - http://www.bohemiancoding.com/sketch -->
+  <title
+     id="title2">play_arrow</title>
+  <desc
+     id="desc4">Created with Sketch.</desc>
+  <g
+     id="Icons"
+     stroke="none"
+     stroke-width="1"
+     fill="none"
+     fill-rule="evenodd">
+    <g
+       id="Rounded"
+       transform="translate(-753.000000, -955.000000)">
+      <g
+         id="AV"
+         transform="translate(100.55238,852.22857)">
+        <g
+           id="-Round-/-AV-/-play_arrow"
+           transform="translate(646,98)">
+          <g
+             id="g8">
+            <rect
+               id="Rectangle-Copy-50"
+               x="0"
+               y="0"
+               width="24"
+               height="24" />
+            <path
+               d="m 7,6.82 v 10.36 c 0,0.79 0.87,1.27 1.54,0.84 l 8.14,-5.18 c 0.62,-0.39 0.62,-1.29 0,-1.69 L 8.54,5.98 C 7.87,5.55 7,6.03 7,6.82 Z"
+               id="🔹Icon-Color"
+               fill="#1d1d1d"
+               style="fill:#3fbb3f;fill-opacity:1" />
+          </g>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>
