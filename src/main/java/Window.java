@@ -7,21 +7,11 @@ import java.awt.*;
 public class Window extends JFrame {
 
     Window(){
-        initializeIcon();
+        Utils.initializeIcon(this);
         initialize();
     }
 
-    private void initializeIcon() {
-        ImageIcon img = new ImageIcon("images/logo.png");
 
-        java.net.URL imgURL = Window.class.getResource("images/logo.png");
-        if (imgURL != null) {
-            img = new ImageIcon(imgURL);
-            this.setIconImage(img.getImage());
-        } else {
-            JOptionPane.showMessageDialog(this, "Icono de la aplicación no encontrado.");
-        }
-    }
 
     private JSplitPane initializesplitPanels() {
 
@@ -70,6 +60,48 @@ public class Window extends JFrame {
         return splitPanels;
     }
 
+    private JPanel barraMenu() {
+        //Barra superior
+        JPanel barra = new JPanel();
+        barra.setLayout(new BorderLayout());
+        barra.setPreferredSize(new Dimension(50, 25));
+
+        //Agregar texto de árbol
+        JTextArea treeText = new JTextArea();
+        treeText.setText("Test > Test2 > Test3"); //TODO: MODIFY
+        treeText.setEnabled(false);
+        barra.add(treeText,BorderLayout.WEST);
+
+        //BARRA DE ICONOS
+        JPanel barraIconos = new JPanel();
+        barraIconos.setLayout(new FlowLayout(FlowLayout.RIGHT, 15, 5));
+
+        //Agregar Icono build
+        Icon buildI = new FlatSVGIcon("images/build.svg");
+        JLabel buildL = new JLabel(buildI);
+        barraIconos.add(buildL);
+
+        //Agregar Icono guardar
+        Icon playI = new FlatSVGIcon("images/play.svg");
+        JLabel playL = new JLabel(playI);
+        barraIconos.add(playL);
+
+        //Agregar Icono debug
+        Icon debugI = new FlatSVGIcon("images/debug.svg");
+        JLabel debugL = new JLabel(debugI);
+        barraIconos.add(debugL);
+
+        //Agregar Icono stop
+        Icon stopI = new FlatSVGIcon("images/stop.svg");
+        JLabel stopL = new JLabel(stopI);
+        stopL.setEnabled(false); //Deshabilitar por defecto
+        barraIconos.add(stopL);
+
+        barra.add(barraIconos,BorderLayout.EAST);
+
+        return barra;
+    }
+
     private void initialize(){
 
         this.setSize(1200,720);
@@ -81,51 +113,12 @@ public class Window extends JFrame {
         panel.setLayout(new BorderLayout());
 
         //MENÚ
-        JMenuBar menuBar = new Menu();
+        JMenuBar menuBar = new Menu(this);
         this.setJMenuBar(menuBar);
         this.setTitle("MadIDE");
 
-        //Agregar los paneles
-            //Barra superior
-            JPanel barra = new JPanel();
-            barra.setLayout(new BorderLayout());
-            barra.setPreferredSize(new Dimension(50, 25));
-
-            //Agregar texto de árbol
-            JTextArea treeText = new JTextArea();
-            treeText.setText("Test > Test2 > Test3"); //TODO: MODIFY
-            treeText.setEnabled(false);
-            barra.add(treeText,BorderLayout.WEST);
-
-            //BARRA DE ICONOS
-            JPanel barraIconos = new JPanel();
-            barraIconos.setLayout(new FlowLayout(FlowLayout.RIGHT, 15, 5));
-
-                //Agregar Icono build
-                Icon buildI = new FlatSVGIcon("images/build.svg");
-                JLabel buildL = new JLabel(buildI);
-                barraIconos.add(buildL);
-
-                //Agregar Icono guardar
-                Icon playI = new FlatSVGIcon("images/play.svg");
-                JLabel playL = new JLabel(playI);
-                barraIconos.add(playL);
-
-                //Agregar Icono debug
-                Icon debugI = new FlatSVGIcon("images/debug.svg");
-                JLabel debugL = new JLabel(debugI);
-                barraIconos.add(debugL);
-
-                //Agregar Icono stop
-                Icon stopI = new FlatSVGIcon("images/stop.svg");
-                JLabel stopL = new JLabel(stopI);
-                stopL.setEnabled(false); //Deshabilitar por defecto
-                barraIconos.add(stopL);
-
-            barra.add(barraIconos,BorderLayout.EAST);
-
-            //Agregar menú
-            panel.add(barra, BorderLayout.NORTH);
+        //Agregar menú
+        panel.add(barraMenu(), BorderLayout.NORTH);
 
             //Panel central IDE
             panel.add(initializesplitPanels(),BorderLayout.CENTER); //Agregar al Main Panel
@@ -138,4 +131,6 @@ public class Window extends JFrame {
 
 
     }
+
+
 }

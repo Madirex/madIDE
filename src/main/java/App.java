@@ -1,3 +1,4 @@
+import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 
@@ -14,7 +15,7 @@ public class App {
 
                 //SETUP
                 try {
-                    UIManager.setLookAndFeel( new FlatDarkLaf() );
+                    UIManager.setLookAndFeel( new FlatDarculaLaf() );
                 } catch( Exception ex ) {
                     System.err.println( "Failed to initialize LaF" );
                 }
