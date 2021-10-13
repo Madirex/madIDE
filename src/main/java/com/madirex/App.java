@@ -1,9 +1,10 @@
+package com.madirex;
+
 import com.formdev.flatlaf.FlatDarculaLaf;
-import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
+import com.madirex.windows.Ventana;
 
 import javax.swing.*;
-import java.io.File;
 
 public class App {
     public static void main(String[] args)  {
@@ -22,7 +23,7 @@ public class App {
                 UIManager.put( "CheckBox.icon.style", "filled" );
 
                 //Crear Window
-                Window w = new Window();
+                Ventana w = new Ventana();
             }
         });
     }

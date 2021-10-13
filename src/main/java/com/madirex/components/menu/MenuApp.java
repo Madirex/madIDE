@@ -1,6 +1,11 @@
+package com.madirex.components.menu;
+
 import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
+import com.madirex.windows.Ventana;
+import com.madirex.windows.WindowInfo;
+import com.madirex.windows.WindowOpenSave;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,14 +16,14 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-public class Menu extends JMenuBar {
+public class MenuApp extends JMenuBar {
 
     //Menú
     JMenu menu, submenu;
     JMenuItem menuItem;
-    JFrame window;
+    Ventana window;
 
-    Menu(JFrame window){
+    public MenuApp(Ventana window){
         this.window = window;
 
         initializeFile();
@@ -36,12 +41,19 @@ public class Menu extends JMenuBar {
         this.add(menu);
 
         //NEW
-        menuItem = new JMenuItem("Nuevo proyecto",
+        menuItem = new JMenuItem("Nuevo",
                 KeyEvent.VK_T);
         menuItem.setAccelerator(KeyStroke.getKeyStroke(
                 KeyEvent.VK_N, ActionEvent.CTRL_MASK));
         menuItem.getAccessibleContext().setAccessibleDescription(
                 "Crear un nuevo proyecto");
+        menuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                WindowOpenSave w = new WindowOpenSave(window,true);
+                w.nuevo();
+            }
+        });
         menu.add(menuItem); //ADD
 
         //OPEN
@@ -51,6 +63,13 @@ public class Menu extends JMenuBar {
                 KeyEvent.VK_O, ActionEvent.CTRL_MASK));
         menuItem.getAccessibleContext().setAccessibleDescription(
                 "Abre un proyecto existente");
+        menuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                WindowOpenSave w = new WindowOpenSave(window,true);
+                w.abrir();
+            }
+        });
         menu.add(menuItem); //ADD
 
         //SAVE
@@ -60,6 +79,13 @@ public class Menu extends JMenuBar {
                 KeyEvent.VK_S, ActionEvent.CTRL_MASK));
         menuItem.getAccessibleContext().setAccessibleDescription(
                 "Guarda el proyecto actual");
+        menuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                WindowOpenSave w = new WindowOpenSave(window,false);
+                w.guardar();
+            }
+        });
         menu.add(menuItem); //ADD
 
         //GUARDAR COMO...
@@ -68,7 +94,15 @@ public class Menu extends JMenuBar {
         menuItem.setAccelerator(KeyStroke.getKeyStroke(
                 KeyEvent.VK_S, ActionEvent.ALT_MASK));
         menuItem.getAccessibleContext().setAccessibleDescription(
-                "Guarda el proyecto actual en una ubicación a especificar, con el formato deseado");
+                "Guarda el proyecto actual en una ubicación a" +
+                        "especificar, con el formato deseado");
+        menuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                WindowOpenSave w = new WindowOpenSave(window,false);
+                w.guardarComo();
+            }
+        });
         menu.add(menuItem); //ADD
 
         //PRINT
@@ -76,11 +110,12 @@ public class Menu extends JMenuBar {
         menuItem = new JMenuItem("Imprimir",
                 KeyEvent.VK_T);
         menuItem.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_I, ActionEvent.CTRL_MASK));
+                KeyEvent.VK_P, ActionEvent.CTRL_MASK));
         menuItem.getAccessibleContext().setAccessibleDescription(
                 "Imprime el contenido");
         menu.add(menuItem); //ADD
 
+        /*
         //CONFIG
         menu.addSeparator();
         menuItem = new JMenuItem("Configuración",
@@ -90,6 +125,7 @@ public class Menu extends JMenuBar {
         menuItem.getAccessibleContext().setAccessibleDescription(
                 "Editar la configuración del IDE");
         menu.add(menuItem); //ADD
+        */
 
         //EXIT IDE
         menu.addSeparator();
@@ -99,6 +135,18 @@ public class Menu extends JMenuBar {
                 KeyEvent.VK_F4, ActionEvent.ALT_MASK));
         menuItem.getAccessibleContext().setAccessibleDescription(
                 "Cerrar IDE");
+        menuItem.addActionListener(new ActionListener(){
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try{
+                    System.exit(0);
+                }
+                catch(Exception ex){
+                    System.out.println(ex.getMessage());
+                }
+            }
+        });
         menu.add(menuItem); //ADD
 
     }
@@ -107,91 +155,10 @@ public class Menu extends JMenuBar {
         menu = new JMenu("Edición");
         menu.setMnemonic(KeyEvent.VK_S);
         menu.getAccessibleContext().setAccessibleDescription(
-                "Menú de edición");
+                "Opciones de edición");
 
-
-        //Undo
-        menuItem = new JMenuItem("Deshacer",
-                KeyEvent.VK_T);
-        menuItem.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_Z, ActionEvent.CTRL_MASK));
-        menuItem.getAccessibleContext().setAccessibleDescription(
-                "Deshacer acción");
-        menu.add(menuItem);
-
-        //Redo
-        menuItem = new JMenuItem("Rehacer",
-                KeyEvent.VK_T);
-        menuItem.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_Y, ActionEvent.CTRL_MASK));
-        menuItem.getAccessibleContext().setAccessibleDescription(
-                "Rehacer acción");
-        menu.add(menuItem);
-
-        /////////////////
-        ///Manipulación de texto
-        /////////////////
-        menu.addSeparator();
-
-        //Cut
-        menuItem = new JMenuItem("Cortar",
-                KeyEvent.VK_T);
-        menuItem.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_X, ActionEvent.CTRL_MASK));
-        menuItem.getAccessibleContext().setAccessibleDescription(
-                "Cortar el texto seleccionado");
-        menu.add(menuItem);
-
-        //Copy
-        menuItem = new JMenuItem("Copiar",
-                KeyEvent.VK_T);
-        menuItem.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_C, ActionEvent.CTRL_MASK));
-        menuItem.getAccessibleContext().setAccessibleDescription(
-                "Copiar el texto seleccionado");
-        menu.add(menuItem);
-
-        //Paste
-        menuItem = new JMenuItem("Pegar",
-                KeyEvent.VK_T);
-        menuItem.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_V, ActionEvent.CTRL_MASK));
-        menuItem.getAccessibleContext().setAccessibleDescription(
-                "Pegar el texto seleccionado");
-        menu.add(menuItem);
-
-        //Delete
-        menuItem = new JMenuItem("Eliminar",
-                KeyEvent.VK_T);
-        menuItem.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_D, ActionEvent.CTRL_MASK));
-        menuItem.getAccessibleContext().setAccessibleDescription(
-                "Eliminar el texto seleccionado");
-        menu.add(menuItem);
-
-        //Select all
-        menuItem = new JMenuItem("Seleccionar todo",
-                KeyEvent.VK_T);
-        menuItem.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_A, ActionEvent.CTRL_MASK));
-        menuItem.getAccessibleContext().setAccessibleDescription(
-                "Seleccionar todo el texto de la ventana actual");
-        menu.add(menuItem);
-
-        /////////////////
-        ///SEARCH
-        /////////////////
-        menu.addSeparator();
-
-        //Search
-        menuItem = new JMenuItem("Buscar...",
-                KeyEvent.VK_T);
-        menuItem.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_F, ActionEvent.CTRL_MASK));
-        menuItem.getAccessibleContext().setAccessibleDescription(
-                "Buscar algo en el proyecto");
-        menu.add(menuItem);
-
+        MenuEdicion edition = new MenuEdicion(window);
+        menu.add(edition);
 
         //ADD
         this.add(menu);
@@ -255,8 +222,51 @@ public class Menu extends JMenuBar {
                 "Menú vista");
         this.add(menu);
 
-        //VIEW
-        //TODO: ADD
+        //Menú de navegación
+        JMenuItem menuOcultarNav = new JMenuItem("Ocultar navegador",
+                KeyEvent.VK_T);
+        menuOcultarNav.getAccessibleContext().setAccessibleDescription(
+                "Oculta / Muestra el panel de navegación");
+        menuOcultarNav.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                if (window.getJpNav().isVisible()) {
+                    window.getJpNav().setVisible(false);
+                    menuOcultarNav.setText("Mostrar navegador");
+                }
+                else{
+                    window.getJpNav().setVisible(true);
+                    window.getSplitPanelMain().resetToPreferredSizes();
+                    menuOcultarNav.setText("Ocultar navegador");
+                }
+
+            }
+        });
+        menu.add(menuOcultarNav);
+
+        //Menú de consola
+        JMenuItem menuOcultarConsola = new JMenuItem("Ocultar consola",
+                KeyEvent.VK_T);
+        menuOcultarConsola.getAccessibleContext().setAccessibleDescription(
+                "Oculta / Muestra la consola");
+        menuOcultarConsola.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                if (window.getJpConsola().isVisible()) {
+                    window.getJpConsola().setVisible(false);
+                    menuOcultarConsola.setText("Mostrar consola");
+                }
+                else{
+                    window.getJpConsola().setVisible(true);
+                    window.getSplitPanels().resetToPreferredSizes();
+                    menuOcultarConsola.setText("Ocultar consola");
+                }
+
+            }
+        });
+        menu.add(menuOcultarConsola);
 
     //THEMES
         menu.addSeparator();
@@ -331,7 +341,8 @@ public class Menu extends JMenuBar {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    Desktop.getDesktop().browse(new URL("https://www.madirex.com/").toURI());
+                    Desktop.getDesktop().browse(
+                            new URL("https://www.madirex.com/").toURI());
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 } catch (URISyntaxException ex) {
@@ -352,6 +363,7 @@ public class Menu extends JMenuBar {
             @Override
             public void actionPerformed(ActionEvent e) {
                 WindowInfo w = new WindowInfo();
+                w.setIconImage(window.getIconImage());
             }
         });
 

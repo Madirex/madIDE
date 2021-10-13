@@ -1,16 +1,42 @@
+package com.madirex.windows;
+
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import com.madirex.components.EditorPanel;
+import com.madirex.components.EditorText;
+import com.madirex.components.menu.MenuApp;
+import com.madirex.util.Util;
 
 import javax.swing.*;
 import java.awt.*;
 
 
-public class Window extends JFrame {
+public class Ventana extends JFrame {
 
-    Window(){
-        Utils.initializeIcon(this);
-        initialize();
+    private JPanel jpNav; //Navegación
+    private JSplitPane splitPanelMain;
+    private JPanel jpConsola;  //Consola
+    private JSplitPane splitPanels;
+    private JTabbedPane tabsEditorPanel; //TABS
+
+    public EditorText getActualEditorText() {
+        Component c = tabsEditorPanel.getComponent(tabsEditorPanel.getSelectedIndex());
+
+        if (c instanceof EditorPanel) {
+            return (EditorText) ((EditorPanel) c).getEditorText();//((EditorPanel) c).getEditorText();
+        }
+        else{
+            //Si no existe ningún archivo, devolver null
+            return null;
+        }
     }
 
+    public Ventana(){
+        //Inicializar icono
+        Util.initializeIcon(this);
+
+        //Inicializar programa
+        initialize();
+    }
 
 
     private JSplitPane initializesplitPanels() {
@@ -19,20 +45,21 @@ public class Window extends JFrame {
         /// AGREGAR SPLIT PANEL: NAVEGADOR Y EDITOR
         ///////////////////////////
             //NAVEGADOR
-            JPanel jpNav = new JPanel();
+            jpNav = new JPanel();
             jpNav.setLayout(new BorderLayout());
             JTree tree = new JTree();
             jpNav.add(tree);
 
-            //Editor
-            JPanel jpEditor = new JPanel();
-            jpEditor.setLayout(new BorderLayout());
-            JTextArea ta = new JTextArea();
-            JScrollPane sp = new JScrollPane(ta);
-            jpEditor.add(sp);
+            //Panel editor
+            tabsEditorPanel = new JTabbedPane();
+
+            //TODO: TEMP
+            EditorPanel jpEditor = new EditorPanel(this);
+            tabsEditorPanel.addTab("* Nuevo",jpEditor);
 
             //SPLIT PANEL
-            JSplitPane splitPanelMain = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,jpNav, jpEditor);
+            splitPanelMain = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+                    jpNav, tabsEditorPanel);
             splitPanelMain.setOneTouchExpandable(true);
             splitPanelMain.setResizeWeight(0.1);
 
@@ -45,14 +72,15 @@ public class Window extends JFrame {
         ///////////////////////////
 
         //CONSOLA
-        JPanel jpConsola = new JPanel();
+        jpConsola = new JPanel();
         jpConsola.setLayout(new BorderLayout());
-        JTextArea ta2 = new JTextArea();
-        JScrollPane sp2 = new JScrollPane(ta2);
+        JTextPane tp2 = new JTextPane();
+        JScrollPane sp2 = new JScrollPane(tp2);
         jpConsola.add(sp2);
 
         //SPLIT PANEL
-        JSplitPane splitPanels = new JSplitPane(JSplitPane.VERTICAL_SPLIT,splitPanelMain, jpConsola);
+        splitPanels = new JSplitPane(JSplitPane.VERTICAL_SPLIT,splitPanelMain,
+                jpConsola);
         splitPanels.setOneTouchExpandable(true);
         splitPanels.setResizeWeight(0.8);
 
@@ -113,7 +141,7 @@ public class Window extends JFrame {
         panel.setLayout(new BorderLayout());
 
         //MENÚ
-        JMenuBar menuBar = new Menu(this);
+        JMenuBar menuBar = new MenuApp(this);
         this.setJMenuBar(menuBar);
         this.setTitle("MadIDE");
 
@@ -121,7 +149,7 @@ public class Window extends JFrame {
         panel.add(barraMenu(), BorderLayout.NORTH);
 
             //Panel central IDE
-            panel.add(initializesplitPanels(),BorderLayout.CENTER); //Agregar al Main Panel
+            panel.add(initializesplitPanels(),BorderLayout.CENTER);
 
         this.add(panel);
 
@@ -132,5 +160,25 @@ public class Window extends JFrame {
 
     }
 
+    //GETTERS && SETTERS
+    public JPanel getJpConsola() {
+        return jpConsola;
+    }
+
+    public JSplitPane getSplitPanels() {
+        return splitPanels;
+    }
+
+    public JPanel getJpNav() {
+        return jpNav;
+    }
+
+    public JSplitPane getSplitPanelMain() {
+        return splitPanelMain;
+    }
+
+    public JTabbedPane getTabsEditorPanel() {
+        return tabsEditorPanel;
+    }
 
 }
