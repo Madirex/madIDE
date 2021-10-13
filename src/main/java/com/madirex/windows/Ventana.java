@@ -75,6 +75,7 @@ public class Ventana extends JFrame {
         jpConsola = new JPanel();
         jpConsola.setLayout(new BorderLayout());
         JTextPane tp2 = new JTextPane();
+        tp2.setEditable(false);
         JScrollPane sp2 = new JScrollPane(tp2);
         jpConsola.add(sp2);
 

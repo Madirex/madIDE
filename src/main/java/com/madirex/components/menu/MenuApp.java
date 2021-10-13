@@ -157,8 +157,13 @@ public class MenuApp extends JMenuBar {
         menu.getAccessibleContext().setAccessibleDescription(
                 "Opciones de edición");
 
-        MenuEdicion edition = new MenuEdicion(window);
-        menu.add(edition);
+        MenuEdicion menuEdit = new MenuEdicion(window,menu);
+
+        //Undo Redo
+        menuEdit.undoredo();
+        menu.addSeparator();
+        menuEdit.portapapeles();
+        menuEdit.selectRemove();
 
         //ADD
         this.add(menu);

@@ -4,29 +4,47 @@ import com.madirex.components.menu.MenuEdicion;
 import com.madirex.windows.Ventana;
 
 import javax.swing.*;
+import javax.swing.text.DefaultStyledDocument;
 import javax.swing.undo.UndoManager;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-public class EditorText extends JTextArea {
+public class EditorText extends JTextPane {
 
     private UndoManager undoManager;
 
-    public EditorText(Ventana window) {
+    public EditorText(Ventana window, DefaultStyledDocument doc) {
+
+        //Asignar doc
+        setStyledDocument(doc);
 
         //Inicializar menú popup
-        JPopupMenu popup = new JPopupMenu();
-        MenuEdicion editionMenu = new MenuEdicion(window);
-        popup.add(editionMenu);
-        this.setComponentPopupMenu(popup);
+        JPopupMenu menu = new JPopupMenu();
+        //MenuSections editionMenu = new MenuSections(window,popup);
+        //editionMenu.menuFormat();
+        //
+        menu.getAccessibleContext().setAccessibleDescription(
+                "Opciones de edición");
 
+        MenuEdicion menuEdit = new MenuEdicion(window,menu);
+
+        //Undo Redo
+        menuEdit.undoredo();
+        menu.addSeparator();
+        menuEdit.portapapeles();
+        menuEdit.selectRemove();
+
+        //ADD
+        this.setComponentPopupMenu(menu);
+
+        //Undo Manager
         undoManager = new UndoManager();
         this.getDocument().addUndoableEditListener(undoManager);
         this.setFont(new Font("Arial", Font.PLAIN, 16));
 
         //Cambiar tab por 4 espacios
-        this.setTabSize(0);
+        //this.setTabSize(0);
 
         this.addKeyListener(new KeyListener(){
             @Override
@@ -50,7 +68,12 @@ public class EditorText extends JTextArea {
     }
 
     public void tabEvent(){
-        this.append("    ");
+        try{
+            String espacios = "    ";
+            this.getDocument().insertString(this.getCaretPosition(), espacios, null);
+        }catch(Exception ex){
+            System.out.println(ex);
+        }
     }
 
 

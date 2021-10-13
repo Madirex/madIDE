@@ -8,23 +8,21 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
-public class MenuEdicion extends JMenu
+public class MenuEdicion
 {
     private JMenuItem item;
     private Ventana window;
+    private JComponent menu;
 
-    public MenuEdicion(Ventana window){
+    public MenuEdicion(Ventana window, JComponent menu){
         this.window = window;
-        crearMenu();
+        this.menu = menu;
+
+        menu.getAccessibleContext().setAccessibleDescription(
+                "Menú de edición");
     }
 
-    public void crearMenu(){
-
-        this.setMnemonic(KeyEvent.VK_S);
-        this.getAccessibleContext().setAccessibleDescription(
-                "Menú de edición");
-
-
+    public void undoredo() {
         //Undo
         item = new JMenuItem("Deshacer",
                 KeyEvent.VK_T);
@@ -35,15 +33,14 @@ public class MenuEdicion extends JMenu
         item.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try{
+                try {
                     window.getActualEditorText().doUndo();
-                }
-                catch(Exception ex){
+                } catch (Exception ex) {
                     System.out.println(ex.getMessage());
                 }
             }
         });
-        this.add(item);
+        menu.add(item);
 
         //Redo
         item = new JMenuItem("Rehacer",
@@ -55,21 +52,17 @@ public class MenuEdicion extends JMenu
         item.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try{
+                try {
                     window.getActualEditorText().doRedo();
-                }
-                catch(Exception ex){
+                } catch (Exception ex) {
                     System.out.println(ex.getMessage());
                 }
             }
         });
-        this.add(item);
+        menu.add(item);
+    }
 
-        /////////////////
-        ///Manipulación de texto
-        /////////////////
-        this.addSeparator();
-
+    public void portapapeles(){
         //Copy
         item = new JMenuItem("Copiar",
                 KeyEvent.VK_T);
@@ -80,15 +73,14 @@ public class MenuEdicion extends JMenu
         item.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try{
+                try {
                     window.getActualEditorText().copy();
-                }
-                catch(Exception ex){
+                } catch (Exception ex) {
                     System.out.println(ex.getMessage());
                 }
             }
         });
-        this.add(item);
+        menu.add(item);
 
         //Cut
         item = new JMenuItem("Cortar",
@@ -100,15 +92,14 @@ public class MenuEdicion extends JMenu
         item.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try{
+                try {
                     window.getActualEditorText().cut();
-                }
-                catch(Exception ex){
+                } catch (Exception ex) {
                     System.out.println(ex.getMessage());
                 }
             }
         });
-        this.add(item);
+        menu.add(item);
 
         //Paste
         item = new JMenuItem("Pegar",
@@ -120,16 +111,17 @@ public class MenuEdicion extends JMenu
         item.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try{
+                try {
                     window.getActualEditorText().paste();
-                }
-                catch(Exception ex){
+                } catch (Exception ex) {
                     System.out.println(ex.getMessage());
                 }
             }
         });
-        this.add(item);
+        menu.add(item);
+    }
 
+    public void selectRemove(){
         //Delete
         item = new JMenuItem("Suprimir",
                 KeyEvent.VK_T);
@@ -140,15 +132,14 @@ public class MenuEdicion extends JMenu
         item.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try{
+                try {
                     window.getActualEditorText().replaceSelection("");
-                }
-                catch(Exception ex){
+                } catch (Exception ex) {
                     System.out.println(ex.getMessage());
                 }
             }
         });
-        this.add(item);
+        menu.add(item);
 
         //Select all
         item = new JMenuItem("Seleccionar todo",
@@ -160,32 +151,13 @@ public class MenuEdicion extends JMenu
         item.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try{
+                try {
                     window.getActualEditorText().selectAll();
-                }
-                catch(Exception ex){
+                } catch (Exception ex) {
                     System.out.println(ex.getMessage());
                 }
             }
         });
-        this.add(item);
-
-            /*
-            /////////////////
-            ///SEARCH
-            /////////////////
-            menu.addSeparator();
-
-            //Search
-            menuItem = new JMenuItem("Buscar...",
-                    KeyEvent.VK_T);
-            menuItem.setAccelerator(KeyStroke.getKeyStroke(
-                    KeyEvent.VK_F, ActionEvent.CTRL_MASK));
-            menuItem.getAccessibleContext().setAccessibleDescription(
-                    "Buscar algo en el proyecto");
-            menu.add(menuItem);
-            */
+        menu.add(item);
     }
-
-
 }
