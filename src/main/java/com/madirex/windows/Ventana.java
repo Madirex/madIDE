@@ -5,8 +5,11 @@ import com.madirex.components.EditorPanel;
 import com.madirex.components.EditorText;
 import com.madirex.components.menu.MenuApp;
 import com.madirex.util.Util;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 import javax.swing.*;
+import javax.swing.text.*;
 import java.awt.*;
 
 
@@ -183,3 +186,4 @@ public class Ventana extends JFrame {
     }
 
 }
+

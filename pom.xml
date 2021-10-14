@@ -38,6 +38,12 @@
             <artifactId>flatlaf-intellij-themes</artifactId>
             <version>1.6</version>
         </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>RELEASE</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
 

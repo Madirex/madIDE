@@ -3,6 +3,7 @@ package com.madirex.components.menu;
 import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
+import com.madirex.util.Util;
 import com.madirex.windows.Ventana;
 import com.madirex.windows.WindowInfo;
 import com.madirex.windows.WindowOpenSave;
@@ -286,6 +287,11 @@ public class MenuApp extends JMenuBar {
                 try {
                     UIManager.setLookAndFeel( new FlatLightLaf() );
                     SwingUtilities.updateComponentTreeUI(window);
+
+                    /*TODO: Hago el cambio manual porque no he conseguido hacerlo automático
+                        En un futuro se puede optimizar para que el color del texto se cambie automáticamente*/
+                    //Util.EditorDocument.refrescarDoc(Color.BLACK);
+
                 } catch( Exception ex ) {
                     System.err.println( "Failed to initialize LaF" );
                 }
@@ -302,6 +308,10 @@ public class MenuApp extends JMenuBar {
                 try {
                     UIManager.setLookAndFeel( new FlatDarkLaf() );
                     SwingUtilities.updateComponentTreeUI(window);
+
+                    /*TODO: Hago el cambio manual porque no he conseguido hacerlo automático
+                        En un futuro se puede optimizar para que el color del texto se cambie automáticamente*/
+                    //Util.EditorDocument.refrescarDoc(Color.WHITE);
                 } catch( Exception ex ) {
                     System.err.println( "Failed to initialize LaF" );
                 }
@@ -318,6 +328,10 @@ public class MenuApp extends JMenuBar {
                 try {
                     UIManager.setLookAndFeel( new FlatDarculaLaf() );
                     SwingUtilities.updateComponentTreeUI(window);
+
+                    /*TODO: Hago el cambio manual porque no he conseguido hacerlo automático
+                        En un futuro se puede optimizar para que el color del texto se cambie automáticamente*/
+                    //Util.EditorDocument.refrescarDoc(Color.WHITE);
                 } catch( Exception ex ) {
                     System.err.println( "Failed to initialize LaF" );
                 }

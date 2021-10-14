@@ -14,6 +14,8 @@ public class EditorText extends JTextPane {
 
     private UndoManager undoManager;
 
+
+
     public EditorText(Ventana window, DefaultStyledDocument doc) {
 
         //Asignar doc
@@ -42,6 +44,8 @@ public class EditorText extends JTextPane {
         undoManager = new UndoManager();
         this.getDocument().addUndoableEditListener(undoManager);
         this.setFont(new Font("Arial", Font.PLAIN, 16));
+
+
 
         //Cambiar tab por 4 espacios
         //this.setTabSize(0);
