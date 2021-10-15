@@ -30,7 +30,7 @@ public class WindowInfo extends JDialog {
             //Título
             JLabel title = new JLabel();
             title.setText("MadIDE");
-            title.setFont(new Font("Arial", Font.PLAIN, 25));
+            title.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 25));
             title.setBorder(BorderFactory.createEmptyBorder(0, 0,
                     5, 0)); //Crear márgenes
             title.setAlignmentX(JLabel.CENTER_ALIGNMENT); //CENTRAR

@@ -3,10 +3,11 @@ package com.madirex.components.menu;
 import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
-import com.madirex.util.Util;
+import com.madirex.util.ProgramProcess;
 import com.madirex.windows.Ventana;
 import com.madirex.windows.WindowInfo;
 import com.madirex.windows.WindowOpenSave;
+import lombok.SneakyThrows;
 
 import javax.swing.*;
 import java.awt.*;
@@ -114,6 +115,18 @@ public class MenuApp extends JMenuBar {
                 KeyEvent.VK_P, ActionEvent.CTRL_MASK));
         menuItem.getAccessibleContext().setAccessibleDescription(
                 "Imprime el contenido");
+        menuItem.addActionListener(new ActionListener() {
+            @SneakyThrows
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //WindowPrint w = new WindowPrint(window,false);
+                //w.print();
+                //String nombreDir = window.getTabsEditorPanel().getSelectedIndex().get;
+
+                window.getActualEditorText().print();
+
+            }
+        });
         menu.add(menuItem); //ADD
 
         /*
@@ -184,6 +197,19 @@ public class MenuApp extends JMenuBar {
                 KeyEvent.VK_F5, ActionEvent.CTRL_MASK));
         menuItem.getAccessibleContext().setAccessibleDescription(
                 "Ejecutar programa");
+        menuItem.addActionListener(new ActionListener() {
+            @SneakyThrows
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //Guardar antes de ejecutar
+                WindowOpenSave w = new WindowOpenSave(window,false);
+                w.guardar();
+
+                //Ejecutar
+                ProgramProcess pg = new ProgramProcess(window);
+                pg.run();
+            }
+        });
         menu.add(menuItem);
 
         //DEBUG
@@ -202,6 +228,20 @@ public class MenuApp extends JMenuBar {
                 KeyEvent.VK_F7, ActionEvent.CTRL_MASK));
         menuItem.getAccessibleContext().setAccessibleDescription(
                 "Hacer build");
+        menuItem.addActionListener(new ActionListener() {
+            @SneakyThrows
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //Guardar antes de hacer build
+                WindowOpenSave w = new WindowOpenSave(window,false);
+                w.guardar();
+
+
+                //Hacer build
+                ProgramProcess pg = new ProgramProcess(window);
+                pg.compilar();
+            }
+        });
         menu.add(menuItem);
 
         ///
@@ -251,28 +291,28 @@ public class MenuApp extends JMenuBar {
         });
         menu.add(menuOcultarNav);
 
-        //Menú de consola
-        JMenuItem menuOcultarConsola = new JMenuItem("Ocultar consola",
+        //Menú de terminal
+        JMenuItem menuOcultarTerminal = new JMenuItem("Ocultar terminal",
                 KeyEvent.VK_T);
-        menuOcultarConsola.getAccessibleContext().setAccessibleDescription(
-                "Oculta / Muestra la consola");
-        menuOcultarConsola.addActionListener(new ActionListener() {
+        menuOcultarTerminal.getAccessibleContext().setAccessibleDescription(
+                "Oculta / Muestra el terminal");
+        menuOcultarTerminal.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                if (window.getJpConsola().isVisible()) {
-                    window.getJpConsola().setVisible(false);
-                    menuOcultarConsola.setText("Mostrar consola");
+                if (window.getJpTerminal().isVisible()) {
+                    window.getJpTerminal().setVisible(false);
+                    menuOcultarTerminal.setText("Mostrar terminal");
                 }
                 else{
-                    window.getJpConsola().setVisible(true);
+                    window.getJpTerminal().setVisible(true);
                     window.getSplitPanels().resetToPreferredSizes();
-                    menuOcultarConsola.setText("Ocultar consola");
+                    menuOcultarTerminal.setText("Ocultar terminal");
                 }
 
             }
         });
-        menu.add(menuOcultarConsola);
+        menu.add(menuOcultarTerminal);
 
     //THEMES
         menu.addSeparator();

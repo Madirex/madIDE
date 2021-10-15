@@ -3,13 +3,11 @@ package com.madirex.windows;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.madirex.components.EditorPanel;
 import com.madirex.components.EditorText;
+import com.madirex.components.TerminalPanel;
 import com.madirex.components.menu.MenuApp;
 import com.madirex.util.Util;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 
 import javax.swing.*;
-import javax.swing.text.*;
 import java.awt.*;
 
 
@@ -17,7 +15,7 @@ public class Ventana extends JFrame {
 
     private JPanel jpNav; //Navegación
     private JSplitPane splitPanelMain;
-    private JPanel jpConsola;  //Consola
+    private TerminalPanel jpTerminal;  //Terminal
     private JSplitPane splitPanels;
     private JTabbedPane tabsEditorPanel; //TABS
 
@@ -71,20 +69,15 @@ public class Ventana extends JFrame {
         jpEditor.setMinimumSize(new Dimension(50, 50));
 
         ///////////////////////////
-        /// AGREGAR SPLIT PANEL: Split (navegador+editor) Y Consola
+        /// AGREGAR SPLIT PANEL: Split (navegador+editor) Y Terminal
         ///////////////////////////
 
-        //CONSOLA
-        jpConsola = new JPanel();
-        jpConsola.setLayout(new BorderLayout());
-        JTextPane tp2 = new JTextPane();
-        tp2.setEditable(false);
-        JScrollPane sp2 = new JScrollPane(tp2);
-        jpConsola.add(sp2);
+        //TERMINAL
+        jpTerminal = new TerminalPanel(this);
 
         //SPLIT PANEL
         splitPanels = new JSplitPane(JSplitPane.VERTICAL_SPLIT,splitPanelMain,
-                jpConsola);
+                jpTerminal);
         splitPanels.setOneTouchExpandable(true);
         splitPanels.setResizeWeight(0.8);
 
@@ -165,8 +158,8 @@ public class Ventana extends JFrame {
     }
 
     //GETTERS && SETTERS
-    public JPanel getJpConsola() {
-        return jpConsola;
+    public TerminalPanel getJpTerminal() {
+        return jpTerminal;
     }
 
     public JSplitPane getSplitPanels() {

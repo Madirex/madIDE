@@ -25,9 +25,9 @@ public class WindowOpenSave extends JFileChooser {
     private void inicializeWindow() {
         this.setCurrentDirectory(new File(System.getProperty("user.home")));
 
-        //Agregar filtro jar
-        FileNameExtensionFilter filterJar = new FileNameExtensionFilter(".jar", "jar");
-        this.setFileFilter(filterJar);
+        //Agregar filtro java
+        FileNameExtensionFilter filterJava = new FileNameExtensionFilter(".java", "java");
+        this.setFileFilter(filterJava);
     }
 
     public void guardar(){
