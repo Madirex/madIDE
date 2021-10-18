@@ -1,9 +1,10 @@
 package com.madirex.components;
 
-import com.madirex.components.menu.MenuEdicion;
-import com.madirex.windows.Ventana;
+import com.madirex.components.menu.MenuEdition;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.undo.UndoManager;
 import java.awt.*;
@@ -13,8 +14,38 @@ import java.awt.event.KeyListener;
 public class EditorText extends JTextPane {
 
     private UndoManager undoManager;
+    private boolean archivoModificado = false;
+    private String direction = "Test2 > Test2 > Test2"; //TODO: MODIFY TREE DIR
 
-    public EditorText(Ventana window, DefaultStyledDocument doc) {
+    public boolean isArchivoModificado() {
+        return archivoModificado;
+    }
+
+    public String getDirection() {
+        return direction;
+    }
+
+    public EditorText(DefaultStyledDocument doc) {
+
+        //AGREGAR LISTENER
+        doc.addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                archivoModificado = true;
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                archivoModificado = true;
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                archivoModificado = true;
+            }
+        });
+
+
 
         //Asignar doc
         setStyledDocument(doc);
@@ -27,7 +58,7 @@ public class EditorText extends JTextPane {
         menu.getAccessibleContext().setAccessibleDescription(
                 "Opciones de edición");
 
-        MenuEdicion menuEdit = new MenuEdicion(window,menu);
+        MenuEdition menuEdit = new MenuEdition(menu);
 
         //Undo Redo
         menuEdit.undoredo();

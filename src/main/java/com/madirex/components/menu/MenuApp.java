@@ -4,7 +4,7 @@ import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.madirex.util.ProgramProcess;
-import com.madirex.windows.Ventana;
+import com.madirex.util.Utils;
 import com.madirex.windows.WindowInfo;
 import com.madirex.windows.WindowOpenSave;
 import lombok.SneakyThrows;
@@ -23,10 +23,8 @@ public class MenuApp extends JMenuBar {
     //Menú
     JMenu menu, submenu;
     JMenuItem menuItem;
-    Ventana window;
 
-    public MenuApp(Ventana window){
-        this.window = window;
+    public MenuApp(){
 
         initializeFile();
         initializeEdit();
@@ -52,7 +50,7 @@ public class MenuApp extends JMenuBar {
         menuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                WindowOpenSave w = new WindowOpenSave(window,true);
+                WindowOpenSave w = new WindowOpenSave(true);
                 w.nuevo();
             }
         });
@@ -68,7 +66,7 @@ public class MenuApp extends JMenuBar {
         menuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                WindowOpenSave w = new WindowOpenSave(window,true);
+                WindowOpenSave w = new WindowOpenSave(true);
                 w.abrir();
             }
         });
@@ -84,7 +82,7 @@ public class MenuApp extends JMenuBar {
         menuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                WindowOpenSave w = new WindowOpenSave(window,false);
+                WindowOpenSave w = new WindowOpenSave(false);
                 w.guardar();
             }
         });
@@ -101,7 +99,7 @@ public class MenuApp extends JMenuBar {
         menuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                WindowOpenSave w = new WindowOpenSave(window,false);
+                WindowOpenSave w = new WindowOpenSave(false);
                 w.guardarComo();
             }
         });
@@ -123,7 +121,7 @@ public class MenuApp extends JMenuBar {
                 //w.print();
                 //String nombreDir = window.getTabsEditorPanel().getSelectedIndex().get;
 
-                window.getActualEditorText().print();
+                Utils.ventana.getActualEditorText().print();
 
             }
         });
@@ -171,7 +169,7 @@ public class MenuApp extends JMenuBar {
         menu.getAccessibleContext().setAccessibleDescription(
                 "Opciones de edición");
 
-        MenuEdicion menuEdit = new MenuEdicion(window,menu);
+        MenuEdition menuEdit = new MenuEdition(menu);
 
         //Undo Redo
         menuEdit.undoredo();
@@ -201,12 +199,7 @@ public class MenuApp extends JMenuBar {
             @SneakyThrows
             @Override
             public void actionPerformed(ActionEvent e) {
-                //Guardar antes de ejecutar
-                WindowOpenSave w = new WindowOpenSave(window,false);
-                w.guardar();
-
-                //Ejecutar
-                ProgramProcess pg = new ProgramProcess(window);
+                ProgramProcess pg = new ProgramProcess();
                 pg.run();
             }
         });
@@ -219,6 +212,14 @@ public class MenuApp extends JMenuBar {
                 KeyEvent.VK_F6, ActionEvent.CTRL_MASK));
         menuItem.getAccessibleContext().setAccessibleDescription(
                 "Hacer Debug");
+        menuItem.addActionListener(new ActionListener() {
+            @SneakyThrows
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ProgramProcess p = new ProgramProcess();
+                p.debug();
+            }
+        });
         menu.add(menuItem);
 
         //BUILD
@@ -232,20 +233,14 @@ public class MenuApp extends JMenuBar {
             @SneakyThrows
             @Override
             public void actionPerformed(ActionEvent e) {
-                //Guardar antes de hacer build
-                WindowOpenSave w = new WindowOpenSave(window,false);
-                w.guardar();
-
-
-                //Hacer build
-                ProgramProcess pg = new ProgramProcess(window);
-                pg.compilar();
+                ProgramProcess p = new ProgramProcess();
+                p.compilar();
             }
         });
         menu.add(menuItem);
 
         ///
-        //STOP
+        //STOP //TODO: STOP
         menu.addSeparator();
         menuItem = new JMenuItem("Parar",
                 KeyEvent.VK_T);
@@ -277,13 +272,13 @@ public class MenuApp extends JMenuBar {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                if (window.getJpNav().isVisible()) {
-                    window.getJpNav().setVisible(false);
+                if (Utils.ventana.getJpNav().isVisible()) {
+                    Utils.ventana.getJpNav().setVisible(false);
                     menuOcultarNav.setText("Mostrar navegador");
                 }
                 else{
-                    window.getJpNav().setVisible(true);
-                    window.getSplitPanelMain().resetToPreferredSizes();
+                    Utils.ventana.getJpNav().setVisible(true);
+                    Utils.ventana.getSplitPanelMain().resetToPreferredSizes();
                     menuOcultarNav.setText("Ocultar navegador");
                 }
 
@@ -300,13 +295,13 @@ public class MenuApp extends JMenuBar {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                if (window.getJpTerminal().isVisible()) {
-                    window.getJpTerminal().setVisible(false);
+                if (Utils.ventana.getJpTerminal().isVisible()) {
+                    Utils.ventana.getJpTerminal().setVisible(false);
                     menuOcultarTerminal.setText("Mostrar terminal");
                 }
                 else{
-                    window.getJpTerminal().setVisible(true);
-                    window.getSplitPanels().resetToPreferredSizes();
+                    Utils.ventana.getJpTerminal().setVisible(true);
+                    Utils.ventana.getSplitPanels().resetToPreferredSizes();
                     menuOcultarTerminal.setText("Ocultar terminal");
                 }
 
@@ -326,7 +321,7 @@ public class MenuApp extends JMenuBar {
                 //SETUP
                 try {
                     UIManager.setLookAndFeel( new FlatLightLaf() );
-                    SwingUtilities.updateComponentTreeUI(window);
+                    SwingUtilities.updateComponentTreeUI(Utils.ventana);
 
                     /*TODO: Hago el cambio manual porque no he conseguido hacerlo automático
                         En un futuro se puede optimizar para que el color del texto se cambie automáticamente*/
@@ -347,7 +342,7 @@ public class MenuApp extends JMenuBar {
                 //SETUP
                 try {
                     UIManager.setLookAndFeel( new FlatDarkLaf() );
-                    SwingUtilities.updateComponentTreeUI(window);
+                    SwingUtilities.updateComponentTreeUI(Utils.ventana);
 
                     /*TODO: Hago el cambio manual porque no he conseguido hacerlo automático
                         En un futuro se puede optimizar para que el color del texto se cambie automáticamente*/
@@ -367,7 +362,7 @@ public class MenuApp extends JMenuBar {
                 //SETUP
                 try {
                     UIManager.setLookAndFeel( new FlatDarculaLaf() );
-                    SwingUtilities.updateComponentTreeUI(window);
+                    SwingUtilities.updateComponentTreeUI(Utils.ventana);
 
                     /*TODO: Hago el cambio manual porque no he conseguido hacerlo automático
                         En un futuro se puede optimizar para que el color del texto se cambie automáticamente*/
@@ -422,7 +417,7 @@ public class MenuApp extends JMenuBar {
             @Override
             public void actionPerformed(ActionEvent e) {
                 WindowInfo w = new WindowInfo();
-                w.setIconImage(window.getIconImage());
+                w.setIconImage(Utils.ventana.getIconImage());
             }
         });
 

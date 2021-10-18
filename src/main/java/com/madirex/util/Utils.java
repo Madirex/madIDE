@@ -1,5 +1,6 @@
 package com.madirex.util;
 
+import com.madirex.components.EditorPanel;
 import com.madirex.windows.Ventana;
 import com.madirex.windows.WindowOpenSave;
 import lombok.AllArgsConstructor;
@@ -7,18 +8,123 @@ import lombok.Data;
 
 import javax.swing.*;
 import javax.swing.text.*;
+import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
+import java.io.File;
+import java.io.FileReader;
+import java.nio.file.Path;
 
-public abstract class Util {
-    public static void initializeIcon(Ventana v) {
+public abstract class Utils {
+    public static Ventana ventana;
+    public static DefaultMutableTreeNode tempTreeCreation;
+
+    public static void initializeIcon(Ventana window) {
         ImageIcon img;
-        java.net.URL imgURL = Ventana.class.getResource("../../../images/logo.png");
-
+        String imgURL = "src/main/resources/images/logo.png";
+        /*String imgURL = System.getProperty("user.dir") + File.separator
+                + "src" + File.separator + "main" + File.separator + "resources"
+                + File.separator + "images" + File.separator + "logo.png";*/
         if (imgURL != null) {
             img = new ImageIcon(imgURL);
-            v.setIconImage(img.getImage());
+            window.setIconImage(img.getImage());
         }
     }
+
+    public static DefaultMutableTreeNode treeCreation(String path) {
+        DefaultMutableTreeNode tree = new DefaultMutableTreeNode(new File(path).getName());
+        File file = new File(path);
+
+        if (file.exists()) {
+            File[] files = file.listFiles();
+            if (files.length == 0) {
+
+                //Carpeta vacía (no permitir children)
+                if(file.isDirectory()) {
+                    DefaultMutableTreeNode dn=new DefaultMutableTreeNode(file.getName(), false);
+                    return dn;
+                }
+
+            }else{
+                for (File file2 : files) {
+
+                    //Coger directorios
+                    if (file2.isDirectory()) {
+                        tree.add(treeCreation(file2.getAbsolutePath()));
+                    }
+
+                    //Coger el resto de archivos
+                    else{
+                        tempTreeCreation=new DefaultMutableTreeNode(file2.getName());
+                        tree.add(tempTreeCreation);
+                    }
+                }
+            }
+        } else {//el archivo no existe
+            return null;
+        }
+        return tree;
+    }
+
+    public static void window() {
+    }
+
+    /**
+     * ABRE ARCHIVOS
+     * @param file
+     * @param dir
+     */
+    public static void abrirArchivo(File file, String dir) {
+        try {
+
+            //Abrir
+            FileReader fr = new FileReader(file);
+            EditorPanel jpEditor = new EditorPanel();
+
+            if (!fileInTabs(dir)) {
+                //Agregar nueva tab
+                Utils.ventana.getTabsEditorPanel().addTab(dir, jpEditor);
+                jpEditor.getEditorText().read(fr, dir); //Introducir texto al archivo
+
+                //Desplazar a la tab abierta
+                Utils.ventana.getTabsEditorPanel().setSelectedIndex(Utils.ventana.getTabsEditorPanel().getTabCount() - 1);
+            }
+            //Cerrar
+            fr.close();
+
+        }catch(Exception ex){
+            System.out.println(ex);
+        }
+    }
+
+    /**
+     * Comprueba si el archivo se encuentra en algún tab
+     * @param path
+     * @return
+     */
+    public static boolean fileInTabs(String path){
+
+        //Chequear si está en tabs
+        boolean enTabs = false;
+
+        int tabCounts = Utils.ventana.getTabsEditorPanel().getTabCount();
+
+        for (int i=0; i < tabCounts; i++)
+        {
+            String tabTitle = Utils.ventana.getTabsEditorPanel().getTitleAt(i);
+
+            if (tabTitle.equals(path)){
+                Utils.ventana.getTabsEditorPanel().setSelectedIndex(i);
+                enTabs = true;
+                break;
+            }
+        }
+
+        return enTabs;
+    }
+
+    /**
+     * OTRO
+     */
     //EDITOR DOCUMENT
     /*@Data
     public static class EditorDocument {

@@ -1,21 +1,19 @@
 package com.madirex.components.menu;
 
 
-import com.madirex.windows.Ventana;
+import com.madirex.util.Utils;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
-public class MenuEdicion
+public class MenuEdition
 {
     private JMenuItem item;
-    private Ventana window;
     private JComponent menu;
 
-    public MenuEdicion(Ventana window, JComponent menu){
-        this.window = window;
+    public MenuEdition(JComponent menu){
         this.menu = menu;
 
         menu.getAccessibleContext().setAccessibleDescription(
@@ -34,7 +32,7 @@ public class MenuEdicion
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    window.getActualEditorText().doUndo();
+                    Utils.ventana.getActualEditorText().doUndo();
                 } catch (Exception ex) {
                     System.out.println(ex.getMessage());
                 }
@@ -53,7 +51,7 @@ public class MenuEdicion
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    window.getActualEditorText().doRedo();
+                    Utils.ventana.getActualEditorText().doRedo();
                 } catch (Exception ex) {
                     System.out.println(ex.getMessage());
                 }
@@ -74,7 +72,7 @@ public class MenuEdicion
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    window.getActualEditorText().copy();
+                    Utils.ventana.getActualEditorText().copy();
                 } catch (Exception ex) {
                     System.out.println(ex.getMessage());
                 }
@@ -93,7 +91,7 @@ public class MenuEdicion
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    window.getActualEditorText().cut();
+                    Utils.ventana.getActualEditorText().cut();
                 } catch (Exception ex) {
                     System.out.println(ex.getMessage());
                 }
@@ -112,7 +110,7 @@ public class MenuEdicion
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    window.getActualEditorText().paste();
+                    Utils.ventana.getActualEditorText().paste();
                 } catch (Exception ex) {
                     System.out.println(ex.getMessage());
                 }
@@ -133,7 +131,7 @@ public class MenuEdicion
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    window.getActualEditorText().replaceSelection("");
+                    Utils.ventana.getActualEditorText().replaceSelection("");
                 } catch (Exception ex) {
                     System.out.println(ex.getMessage());
                 }
@@ -152,7 +150,7 @@ public class MenuEdicion
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    window.getActualEditorText().selectAll();
+                    Utils.ventana.getActualEditorText().selectAll();
                 } catch (Exception ex) {
                     System.out.println(ex.getMessage());
                 }

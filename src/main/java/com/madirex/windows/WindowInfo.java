@@ -25,8 +25,6 @@ public class WindowInfo extends JDialog {
         contenido.setLayout(new BoxLayout(contenido, BoxLayout.Y_AXIS));
 
         //Agregar Icono debug
-
-
             //Título
             JLabel title = new JLabel();
             title.setText("MadIDE");

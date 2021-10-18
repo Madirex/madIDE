@@ -2,6 +2,7 @@ package com.madirex;
 
 import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatLightLaf;
+import com.madirex.util.Utils;
 import com.madirex.windows.Ventana;
 
 import javax.swing.*;
@@ -18,12 +19,14 @@ public class App {
                 try {
                     UIManager.setLookAndFeel( new FlatDarculaLaf() );
                 } catch( Exception ex ) {
-                    System.err.println( "Failed to initialize LaF" );
+                    System.err.println( "Error al inicializar LaF" );
                 }
                 UIManager.put( "CheckBox.icon.style", "filled" );
 
-                //Crear Window
+                //Crear ventana
                 Ventana w = new Ventana();
+                Utils.ventana = w;
+
             }
         });
     }
