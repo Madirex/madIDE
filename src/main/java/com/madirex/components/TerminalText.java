@@ -7,6 +7,5 @@ public class TerminalText extends JTextPane {
 
     public TerminalText(){
         setFont(new Font(Font.MONOSPACED, Font.PLAIN, 15));
-        setEnabled(false);
     }
 }

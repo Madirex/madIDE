@@ -5,15 +5,12 @@ import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.madirex.util.ProgramProcess;
 import com.madirex.util.Utils;
-import com.madirex.windows.WindowInfo;
-import com.madirex.windows.WindowOpenSave;
-import lombok.SneakyThrows;
-
+import com.madirex.View.WindowInfo;
+import com.madirex.View.WindowOpenSave;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.print.PrinterException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -44,15 +41,12 @@ public class MenuApp extends JMenuBar {
         menuItem = new JMenuItem("Nuevo",
                 KeyEvent.VK_T);
         menuItem.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_N, ActionEvent.CTRL_MASK));
+                KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK));
         menuItem.getAccessibleContext().setAccessibleDescription(
                 "Crear un nuevo proyecto");
-        menuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                WindowOpenSave w = new WindowOpenSave(true);
-                w.nuevo();
-            }
+        menuItem.addActionListener(e -> {
+            WindowOpenSave w = new WindowOpenSave(true);
+            w.nuevo();
         });
         menu.add(menuItem); //ADD
 
@@ -60,15 +54,12 @@ public class MenuApp extends JMenuBar {
         menuItem = new JMenuItem("Abrir",
                 KeyEvent.VK_T);
         menuItem.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_O, ActionEvent.CTRL_MASK));
+                KeyEvent.VK_O, KeyEvent.CTRL_DOWN_MASK));
         menuItem.getAccessibleContext().setAccessibleDescription(
                 "Abre un proyecto existente");
-        menuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                WindowOpenSave w = new WindowOpenSave(true);
-                w.abrir();
-            }
+        menuItem.addActionListener(e -> {
+            WindowOpenSave w = new WindowOpenSave(true);
+            w.abrir();
         });
         menu.add(menuItem); //ADD
 
@@ -76,15 +67,12 @@ public class MenuApp extends JMenuBar {
         menuItem = new JMenuItem("Guardar",
                 KeyEvent.VK_T);
         menuItem.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_S, ActionEvent.CTRL_MASK));
+                KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK));
         menuItem.getAccessibleContext().setAccessibleDescription(
                 "Guarda el proyecto actual");
-        menuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                WindowOpenSave w = new WindowOpenSave(false);
-                w.guardar();
-            }
+        menuItem.addActionListener(e -> {
+            WindowOpenSave w = new WindowOpenSave(false);
+            w.guardar();
         });
         menu.add(menuItem); //ADD
 
@@ -92,16 +80,13 @@ public class MenuApp extends JMenuBar {
         menuItem = new JMenuItem("Guardar como...",
                 KeyEvent.VK_T);
         menuItem.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_S, ActionEvent.ALT_MASK));
+                KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK));
         menuItem.getAccessibleContext().setAccessibleDescription(
                 "Guarda el proyecto actual en una ubicación a" +
                         "especificar, con el formato deseado");
-        menuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                WindowOpenSave w = new WindowOpenSave(false);
-                w.guardarComo();
-            }
+        menuItem.addActionListener(e -> {
+            WindowOpenSave w = new WindowOpenSave(false);
+            w.guardarComo();
         });
         menu.add(menuItem); //ADD
 
@@ -110,53 +95,32 @@ public class MenuApp extends JMenuBar {
         menuItem = new JMenuItem("Imprimir",
                 KeyEvent.VK_T);
         menuItem.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_P, ActionEvent.CTRL_MASK));
+                KeyEvent.VK_P, KeyEvent.CTRL_DOWN_MASK));
         menuItem.getAccessibleContext().setAccessibleDescription(
                 "Imprime el contenido");
-        menuItem.addActionListener(new ActionListener() {
-            @SneakyThrows
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //WindowPrint w = new WindowPrint(window,false);
-                //w.print();
-                //String nombreDir = window.getTabsEditorPanel().getSelectedIndex().get;
-
+        menuItem.addActionListener(e -> {
+            try {
                 Utils.ventana.getActualEditorText().print();
-
+            } catch (PrinterException ex) {
+                ex.printStackTrace();
             }
         });
         menu.add(menuItem); //ADD
-
-        /*
-        //CONFIG
-        menu.addSeparator();
-        menuItem = new JMenuItem("Configuración",
-                KeyEvent.VK_T);
-        menuItem.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_I, ActionEvent.CTRL_MASK));
-        menuItem.getAccessibleContext().setAccessibleDescription(
-                "Editar la configuración del IDE");
-        menu.add(menuItem); //ADD
-        */
 
         //EXIT IDE
         menu.addSeparator();
         menuItem = new JMenuItem("Salir",
                 KeyEvent.VK_T);
         menuItem.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_F4, ActionEvent.ALT_MASK));
+                KeyEvent.VK_F4, KeyEvent.CTRL_DOWN_MASK));
         menuItem.getAccessibleContext().setAccessibleDescription(
                 "Cerrar IDE");
-        menuItem.addActionListener(new ActionListener(){
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try{
-                    System.exit(0);
-                }
-                catch(Exception ex){
-                    System.out.println(ex.getMessage());
-                }
+        menuItem.addActionListener(e -> {
+            try{
+                System.exit(0);
+            }
+            catch(Exception ex){
+                System.out.println(ex.getMessage());
             }
         });
         menu.add(menuItem); //ADD
@@ -172,7 +136,7 @@ public class MenuApp extends JMenuBar {
         MenuEdition menuEdit = new MenuEdition(menu);
 
         //Undo Redo
-        menuEdit.undoredo();
+        menuEdit.undoAndRedo();
         menu.addSeparator();
         menuEdit.portapapeles();
         menuEdit.selectRemove();
@@ -192,16 +156,12 @@ public class MenuApp extends JMenuBar {
         menuItem = new JMenuItem("Run",
                 KeyEvent.VK_T);
         menuItem.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_F5, ActionEvent.CTRL_MASK));
+                KeyEvent.VK_F5, KeyEvent.CTRL_DOWN_MASK));
         menuItem.getAccessibleContext().setAccessibleDescription(
                 "Ejecutar programa");
-        menuItem.addActionListener(new ActionListener() {
-            @SneakyThrows
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ProgramProcess pg = new ProgramProcess();
-                pg.run();
-            }
+        menuItem.addActionListener(e -> {
+            ProgramProcess pg = new ProgramProcess();
+            pg.runProgram();
         });
         menu.add(menuItem);
 
@@ -209,16 +169,12 @@ public class MenuApp extends JMenuBar {
         menuItem = new JMenuItem("Debug",
                 KeyEvent.VK_T);
         menuItem.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_F6, ActionEvent.CTRL_MASK));
+                KeyEvent.VK_F6, KeyEvent.CTRL_DOWN_MASK));
         menuItem.getAccessibleContext().setAccessibleDescription(
                 "Hacer Debug");
-        menuItem.addActionListener(new ActionListener() {
-            @SneakyThrows
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ProgramProcess p = new ProgramProcess();
-                p.debug();
-            }
+        menuItem.addActionListener(e -> {
+            ProgramProcess p = new ProgramProcess();
+            p.debug();
         });
         menu.add(menuItem);
 
@@ -226,16 +182,12 @@ public class MenuApp extends JMenuBar {
         menuItem = new JMenuItem("Build",
                 KeyEvent.VK_T);
         menuItem.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_F7, ActionEvent.CTRL_MASK));
+                KeyEvent.VK_F7, KeyEvent.CTRL_DOWN_MASK));
         menuItem.getAccessibleContext().setAccessibleDescription(
                 "Hacer build");
-        menuItem.addActionListener(new ActionListener() {
-            @SneakyThrows
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ProgramProcess p = new ProgramProcess();
-                p.compilar();
-            }
+        menuItem.addActionListener(e -> {
+            ProgramProcess p = new ProgramProcess();
+            p.compilar();
         });
         menu.add(menuItem);
 
@@ -245,7 +197,7 @@ public class MenuApp extends JMenuBar {
         menuItem = new JMenuItem("Parar",
                 KeyEvent.VK_T);
         menuItem.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_F2, ActionEvent.CTRL_MASK));
+                KeyEvent.VK_F2, KeyEvent.CTRL_DOWN_MASK));
         menuItem.getAccessibleContext().setAccessibleDescription(
                 "Parar ejecución del programa");
         menuItem.setEnabled(false);
@@ -268,21 +220,18 @@ public class MenuApp extends JMenuBar {
                 KeyEvent.VK_T);
         menuOcultarNav.getAccessibleContext().setAccessibleDescription(
                 "Oculta / Muestra el panel de navegación");
-        menuOcultarNav.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        menuOcultarNav.addActionListener(e -> {
 
-                if (Utils.ventana.getJpNav().isVisible()) {
-                    Utils.ventana.getJpNav().setVisible(false);
-                    menuOcultarNav.setText("Mostrar navegador");
-                }
-                else{
-                    Utils.ventana.getJpNav().setVisible(true);
-                    Utils.ventana.getSplitPanelMain().resetToPreferredSizes();
-                    menuOcultarNav.setText("Ocultar navegador");
-                }
-
+            if (Utils.ventana.getJpNav().isVisible()) {
+                Utils.ventana.getJpNav().setVisible(false);
+                menuOcultarNav.setText("Mostrar navegador");
             }
+            else{
+                Utils.ventana.getJpNav().setVisible(true);
+                Utils.ventana.getSplitPanelMain().resetToPreferredSizes();
+                menuOcultarNav.setText("Ocultar navegador");
+            }
+
         });
         menu.add(menuOcultarNav);
 
@@ -291,21 +240,18 @@ public class MenuApp extends JMenuBar {
                 KeyEvent.VK_T);
         menuOcultarTerminal.getAccessibleContext().setAccessibleDescription(
                 "Oculta / Muestra el terminal");
-        menuOcultarTerminal.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        menuOcultarTerminal.addActionListener(e -> {
 
-                if (Utils.ventana.getJpTerminal().isVisible()) {
-                    Utils.ventana.getJpTerminal().setVisible(false);
-                    menuOcultarTerminal.setText("Mostrar terminal");
-                }
-                else{
-                    Utils.ventana.getJpTerminal().setVisible(true);
-                    Utils.ventana.getSplitPanels().resetToPreferredSizes();
-                    menuOcultarTerminal.setText("Ocultar terminal");
-                }
-
+            if (Utils.ventana.getJpTerminal().isVisible()) {
+                Utils.ventana.getJpTerminal().setVisible(false);
+                menuOcultarTerminal.setText("Mostrar terminal");
             }
+            else{
+                Utils.ventana.getJpTerminal().setVisible(true);
+                Utils.ventana.getSplitPanels().resetToPreferredSizes();
+                menuOcultarTerminal.setText("Ocultar terminal");
+            }
+
         });
         menu.add(menuOcultarTerminal);
 
@@ -315,63 +261,42 @@ public class MenuApp extends JMenuBar {
         submenu.setMnemonic(KeyEvent.VK_S);
 
         menuItem = new JMenuItem("Light Theme");
-        menuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //SETUP
-                try {
-                    UIManager.setLookAndFeel( new FlatLightLaf() );
-                    SwingUtilities.updateComponentTreeUI(Utils.ventana);
+        menuItem.addActionListener(e -> {
+            //SETUP
+            try {
+                UIManager.setLookAndFeel( new FlatLightLaf() );
+                SwingUtilities.updateComponentTreeUI(Utils.ventana);
 
-                    /*TODO: Hago el cambio manual porque no he conseguido hacerlo automático
-                        En un futuro se puede optimizar para que el color del texto se cambie automáticamente*/
-                    //Util.EditorDocument.refrescarDoc(Color.BLACK);
-
-                } catch( Exception ex ) {
-                    System.err.println( "Failed to initialize LaF" );
-                }
-                UIManager.put( "CheckBox.icon.style", "filled" );
+            } catch( Exception ex ) {
+                System.err.println( "Failed to initialize LaF" );
             }
+            UIManager.put( "CheckBox.icon.style", "filled" );
         });
         submenu.add(menuItem);
 
         menuItem = new JMenuItem("Dark Theme");
-        menuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //SETUP
-                try {
-                    UIManager.setLookAndFeel( new FlatDarkLaf() );
-                    SwingUtilities.updateComponentTreeUI(Utils.ventana);
-
-                    /*TODO: Hago el cambio manual porque no he conseguido hacerlo automático
-                        En un futuro se puede optimizar para que el color del texto se cambie automáticamente*/
-                    //Util.EditorDocument.refrescarDoc(Color.WHITE);
-                } catch( Exception ex ) {
-                    System.err.println( "Failed to initialize LaF" );
-                }
-                UIManager.put( "CheckBox.icon.style", "filled" );
+        menuItem.addActionListener(e -> {
+            //SETUP
+            try {
+                UIManager.setLookAndFeel( new FlatDarkLaf() );
+                SwingUtilities.updateComponentTreeUI(Utils.ventana);
+            } catch( Exception ex ) {
+                System.err.println( "Failed to initialize LaF" );
             }
+            UIManager.put( "CheckBox.icon.style", "filled" );
         });
         submenu.add(menuItem);
 
         menuItem = new JMenuItem("MadiPro Theme");
-        menuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //SETUP
-                try {
-                    UIManager.setLookAndFeel( new FlatDarculaLaf() );
-                    SwingUtilities.updateComponentTreeUI(Utils.ventana);
-
-                    /*TODO: Hago el cambio manual porque no he conseguido hacerlo automático
-                        En un futuro se puede optimizar para que el color del texto se cambie automáticamente*/
-                    //Util.EditorDocument.refrescarDoc(Color.WHITE);
-                } catch( Exception ex ) {
-                    System.err.println( "Failed to initialize LaF" );
-                }
-                UIManager.put( "CheckBox.icon.style", "filled" );
+        menuItem.addActionListener(e -> {
+            //SETUP
+            try {
+                UIManager.setLookAndFeel( new FlatDarculaLaf() );
+                SwingUtilities.updateComponentTreeUI(Utils.ventana);
+            } catch( Exception ex ) {
+                System.err.println( "Failed to initialize LaF" );
             }
+            UIManager.put( "CheckBox.icon.style", "filled" );
         });
         submenu.add(menuItem);
 
@@ -391,17 +316,12 @@ public class MenuApp extends JMenuBar {
         //Help
         menuItem = new JMenuItem("Ayuda...",
                 KeyEvent.VK_T);
-        menuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    Desktop.getDesktop().browse(
-                            new URL("https://www.madirex.com/").toURI());
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                } catch (URISyntaxException ex) {
-                    ex.printStackTrace();
-                }
+        menuItem.addActionListener(e -> {
+            try {
+                Desktop.getDesktop().browse(
+                        new URL("https://www.madirex.com/").toURI());
+            } catch (IOException | URISyntaxException ex) {
+                ex.printStackTrace();
             }
         });
         menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0));
@@ -413,12 +333,9 @@ public class MenuApp extends JMenuBar {
         menu.addSeparator();
         menuItem = new JMenuItem("Acerca de MadIDE",
                 KeyEvent.VK_T);
-        menuItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                WindowInfo w = new WindowInfo();
-                w.setIconImage(Utils.ventana.getIconImage());
-            }
+        menuItem.addActionListener(e -> {
+            WindowInfo w = new WindowInfo();
+            w.setIconImage(Utils.ventana.getIconImage());
         });
 
         menuItem.getAccessibleContext().setAccessibleDescription(

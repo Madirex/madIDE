@@ -1,53 +1,126 @@
 package com.madirex.util;
 
+import com.madirex.components.EditorPanel;
 import com.madirex.components.TerminalText;
-import com.madirex.windows.WindowOpenSave;
+import com.madirex.View.WindowOpenSave;
 
+import javax.swing.*;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
+import java.awt.*;
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class ProgramProcess {
-    private String path;
+    final private String PATH;
 
     public ProgramProcess(){
-        this.path = Utils.ventana.getTabsEditorPanel().getTitleAt(Utils.ventana.getTabsEditorPanel().getSelectedIndex());
-    }
+        Component temp = Utils.ventana.getTabsEditorPanel()
+                .getComponentAt(Utils.ventana.getTabsEditorPanel().getSelectedIndex());
 
-    public void compilar() throws IOException {
-        //Guardar antes de compilar
-        WindowOpenSave w = new WindowOpenSave(false);
-        w.guardar();
-
-        //Compilar
-        Process process = Runtime.getRuntime().exec("cmd.exe /C javac " + path);
-    }
-
-    public void debug() throws IOException{
-        //Guardar antes de hacer debug
-        WindowOpenSave w = new WindowOpenSave(false);
-        w.guardar();
-
-        //Hacer debug
-        Process process = Runtime.getRuntime().exec("cmd.exe /C java " + path);
-    }
-
-    public void run() throws IOException {
-        //Guardar antes de ejecutar
-        WindowOpenSave w = new WindowOpenSave(false);
-        w.guardar();
-
-        //Ejecutar
-        Process process = Runtime.getRuntime().exec("cmd.exe /C java " + path);
-
-        BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
-
-        String line;
-        TerminalText terminal = Utils.ventana.getJpTerminal().getTerminalText();
-
-        terminal.setText(""); //Resetear contenido
-        while((line = br.readLine()) != null){
-            terminal.setText(terminal.getText() + line + "\n"); //Agregar línea
+        if (Utils.ventana.getTabsEditorPanel()
+                .getComponentAt(Utils.ventana.getTabsEditorPanel().getSelectedIndex()) instanceof EditorPanel){
+            this.PATH = ((EditorPanel) temp).getDirection();
+        }
+        else{
+            this.PATH = "";
         }
     }
+
+
+    public void compilar() {
+
+        SwingUtilities.invokeLater(() -> {
+            try
+            {
+                //Guardar antes de compilar
+                WindowOpenSave w = new WindowOpenSave(false);
+                w.guardar();
+
+                //Compilar
+                String[] comandos;
+                comandos = new String[] { "javac", PATH};
+
+                Process process = Runtime.getRuntime().exec(comandos);
+
+                TerminalText terminal = Utils.ventana.getJpTerminal().getTERMINAL_TEXT();
+                terminal.setText("");
+
+                BufferedReader stdError = new BufferedReader(new
+                        InputStreamReader(process.getErrorStream()));
+
+                //LEER CÓDIGO EJECUTADO
+                String s;
+                boolean errores = false;
+
+                //LEER ERRORES
+                while ((s = stdError.readLine()) != null) {
+                    terminal.setText(terminal.getText() + s + "\n"); //Agregar línea
+                    errores = true;
+                }
+
+                if (!errores){
+                    terminal.setText("Compilación realizada.\nNo se han encontrado errores.");
+                }
+            }
+            catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+    }
+
+    public void debug() {
+        SwingUtilities.invokeLater(() -> {
+            //try {
+                //TODO: DEBUG
+           // } catch (Exception ex) {
+           //     ex.printStackTrace();
+           // }
+        });
+    }
+
+    public void runProgram() {
+        SwingUtilities.invokeLater(() -> {
+            try {
+            TerminalText terminal = Utils.ventana.getJpTerminal().getTERMINAL_TEXT();
+            terminal.setText(""); //Resetear contenido
+
+            //Guardar antes de ejecutar
+            WindowOpenSave w = new WindowOpenSave(false);
+            w.guardar();
+
+            //Ejecutar
+                String[] comandos;
+                comandos = new String[] { "java", PATH};
+                Process process = Runtime.getRuntime().exec(comandos);
+
+            BufferedReader stdInput = new BufferedReader(new
+                    InputStreamReader(process.getInputStream()));
+
+            BufferedReader stdError = new BufferedReader(new
+                    InputStreamReader(process.getErrorStream()));
+
+
+            //LEER CÓDIGO EJECUTADO
+            String s;
+            while ((s = stdInput.readLine()) != null) {
+                terminal.setText(terminal.getText() + s + "\n"); //Agregar línea
+            }
+
+            //LEER ERRORES
+            while ((s = stdError.readLine()) != null) {
+
+                //Colorear de rojo
+                Style style = terminal.addStyle("red", null);
+                StyleConstants.setForeground(style, new Color(255,122,106));
+                terminal.getDocument().insertString(terminal.getDocument().getLength(), terminal.getText() + s + "\n",style);
+
+            }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+    }
+
+
 }

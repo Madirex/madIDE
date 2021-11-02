@@ -1,4 +1,4 @@
-package com.madirex.windows;
+package com.madirex.View;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.madirex.components.EditorPanel;
@@ -10,17 +10,12 @@ import com.madirex.util.Utils;
 import lombok.SneakyThrows;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeNode;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.net.URI;
-import java.nio.file.Paths;
 
 
 public class Ventana extends JFrame {
@@ -33,13 +28,13 @@ public class Ventana extends JFrame {
     private JTextArea treeText;
 
     //Atributos estáticos
-    private static JTree tree = new JTree();
+    private final static JTree TREE = new JTree();
     private static String treePath = System.getProperty("user.dir");
 
     ///GETTERS && SETTERS
 
     public static JTree getTree() {
-        return tree;
+        return TREE;
     }
 
     public static String getTreePath() {
@@ -54,10 +49,23 @@ public class Ventana extends JFrame {
         Component c = tabsEditorPanel.getComponent(tabsEditorPanel.getSelectedIndex());
 
         if (c instanceof EditorPanel) {
-            return (EditorText) ((EditorPanel) c).getEditorText();//((EditorPanel) c).getEditorText();
+            return ((EditorPanel) c).getEDITOR_TEXT();
         }
         else{
-            //Si no existe ningún archivo, devolver null
+            JOptionPane.showMessageDialog(Utils.ventana
+                    , "Error: El archivo no existe."
+                    , "Archivo inexistente", JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
+    }
+
+    public EditorPanel getActualEditorPanel() {
+        Component c = tabsEditorPanel.getComponent(tabsEditorPanel.getSelectedIndex());
+
+        if (c instanceof EditorPanel) {
+            return (EditorPanel) c;
+        }
+        else{
             return null;
         }
     }
@@ -68,6 +76,8 @@ public class Ventana extends JFrame {
 
         //Inicializar programa
         initialize();
+
+
     }
 
     public static void actualizarTree(){
@@ -76,7 +86,7 @@ public class Ventana extends JFrame {
         Ventana.getTree().setModel(modelo);
     }
 
-    private JSplitPane initializesplitPanels() {
+    private JSplitPane initializeSplitPanels() {
 
         ///////////////////////////
         /// AGREGAR SPLIT PANEL: NAVEGADOR Y EDITOR
@@ -85,61 +95,47 @@ public class Ventana extends JFrame {
             jpNav = new JPanel();
             jpNav.setLayout(new BorderLayout());
 
-            //JTREE INICIALIZAR
-            DefaultMutableTreeNode nodo = Utils.treeCreation(treePath);
-            DefaultTreeModel modelo =  new DefaultTreeModel(nodo);
+            //INICIALIZAR tree
             actualizarTree();
 
             //Agregar listener y acciones al tree
-            tree.addMouseListener(new MouseAdapter() {
+            TREE.addMouseListener(new MouseAdapter() {
                 public void mouseClicked(MouseEvent e) {
                     if (e.getClickCount() == 2) {
 
-                        DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+                        DefaultMutableTreeNode node = (DefaultMutableTreeNode) TREE.getLastSelectedPathComponent();
 
                         //CREAR LA DIRECCIÓN
-                        String dir = "";
+                        StringBuilder dir = new StringBuilder();
                         DefaultMutableTreeNode actualNode = node;
 
                         while (actualNode.getParent() != null){
-                            dir = actualNode.toString() + File.separator + dir; //Agregar a dirección
+                            dir.insert(0, actualNode + File.separator); //Agregar a dirección
                             actualNode = (DefaultMutableTreeNode) actualNode.getParent(); //Poner el siguiente parent
                         }
 
                         //Eliminar el file separator del final para que quede una dirección correcta
-                        if (dir != ""){
-                            dir = dir.substring(0, dir.length() - 1);
+                        if (!dir.toString().equals("")){
+                            dir = new StringBuilder(dir.substring(0, dir.length() - 1));
                         }
 
-                        dir = treePath + File.separator + dir; //Crear dirección inicial del Tree
+                        dir.insert(0, treePath + File.separator); //Crear dirección inicial del Tree
 
-                        File file = new File(dir);
+                        File file = new File(dir.toString());
 
                         if (!file.isDirectory()){
-                            Utils.abrirArchivo(file,dir);
+                            Utils.abrirArchivo(file, dir.toString());
                         }
 
                     }
                 }
             });
 
-            jpNav.add(tree);
+            jpNav.add(TREE);
 
             //Panel editor
             tabsEditorPanel = new JTabbedPane();
-            tabsEditorPanel.addChangeListener(new ChangeListener() {
-                @Override
-                public void stateChanged(ChangeEvent e) {
-                    treeText.setText(getActualEditorText().getDirection());
-                }
-            });
-
-            //TODO: TEMP *
-            EditorPanel jpEditor = new EditorPanel();
-            tabsEditorPanel.addTab("* Nuevo",jpEditor);
-
-
-
+            tabsEditorPanel.addChangeListener(e -> updateTreeText());
 
             //SPLIT PANEL
             splitPanelMain = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
@@ -149,7 +145,7 @@ public class Ventana extends JFrame {
 
         //TAMAÑO MÍNIMO
         jpNav.setMinimumSize(new Dimension(50, 50));
-        jpEditor.setMinimumSize(new Dimension(50, 50));
+        //jpEditor.setMinimumSize(new Dimension(50, 50));
 
         ///////////////////////////
         /// AGREGAR SPLIT PANEL: Split (navegador+editor) Y Terminal
@@ -162,7 +158,7 @@ public class Ventana extends JFrame {
         splitPanels = new JSplitPane(JSplitPane.VERTICAL_SPLIT,splitPanelMain,
                 jpTerminal);
         splitPanels.setOneTouchExpandable(true);
-        splitPanels.setResizeWeight(0.8);
+        splitPanels.setResizeWeight(0.7);
 
 
         return splitPanels;
@@ -176,7 +172,7 @@ public class Ventana extends JFrame {
 
         //Agregar texto de árbol
         treeText = new JTextArea();
-        //treeText.setText(this.getActualEditorText().getDirection());
+        //treeText.setText(this.getActualEditorText().getTreeInfo());
         treeText.setEnabled(false);
         barra.add(treeText,BorderLayout.WEST);
 
@@ -213,7 +209,7 @@ public class Ventana extends JFrame {
             @SneakyThrows
             public void mouseClicked(MouseEvent me) {
                 ProgramProcess p = new ProgramProcess();
-                p.run();
+                p.runProgram();
             }
 
             public void mouseEntered(java.awt.event.MouseEvent evt) {
@@ -258,10 +254,8 @@ public class Ventana extends JFrame {
         stopL.addMouseListener(new MouseAdapter() {
             @SneakyThrows
             public void mouseClicked(MouseEvent me) {
-                if (stopL.isEnabled()) {
-                    //ProgramProcess p = new ProgramProcess();
-                    //p.debug(); //TODO: CONFIG STOP
-                }
+                stopL.isEnabled();//ProgramProcess p = new ProgramProcess();
+                //p.debug(); //TODO: CONFIG STOP
             }
 
             public void mouseEntered(java.awt.event.MouseEvent evt) {
@@ -289,7 +283,7 @@ public class Ventana extends JFrame {
         this.setPreferredSize(new Dimension(1200,720));
         this.setMinimumSize(new Dimension(400,300));
 
-        //JPANEL Main panel
+        //Main panel (JPanel)
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
 
@@ -302,7 +296,7 @@ public class Ventana extends JFrame {
         panel.add(barraMenu(), BorderLayout.NORTH);
 
             //Panel central IDE
-            panel.add(initializesplitPanels(),BorderLayout.CENTER);
+            panel.add(initializeSplitPanels(),BorderLayout.CENTER);
 
         this.add(panel);
 
@@ -332,6 +326,10 @@ public class Ventana extends JFrame {
 
     public JTabbedPane getTabsEditorPanel() {
         return tabsEditorPanel;
+    }
+
+    public void updateTreeText() {
+            treeText.setText(getActualEditorPanel().getDirection());
     }
 
 }

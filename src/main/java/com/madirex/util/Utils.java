@@ -1,18 +1,13 @@
 package com.madirex.util;
 
 import com.madirex.components.EditorPanel;
-import com.madirex.windows.Ventana;
-import com.madirex.windows.WindowOpenSave;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import com.madirex.View.Ventana;
 
 import javax.swing.*;
-import javax.swing.text.*;
 import javax.swing.tree.DefaultMutableTreeNode;
-import java.awt.*;
 import java.io.File;
 import java.io.FileReader;
-import java.nio.file.Path;
+import java.io.IOException;
 
 public abstract class Utils {
     public static Ventana ventana;
@@ -20,14 +15,11 @@ public abstract class Utils {
 
     public static void initializeIcon(Ventana window) {
         ImageIcon img;
-        String imgURL = "src/main/resources/images/logo.png";
-        /*String imgURL = System.getProperty("user.dir") + File.separator
+        String imgURL = System.getProperty("user.dir") + File.separator
                 + "src" + File.separator + "main" + File.separator + "resources"
-                + File.separator + "images" + File.separator + "logo.png";*/
-        if (imgURL != null) {
-            img = new ImageIcon(imgURL);
-            window.setIconImage(img.getImage());
-        }
+                + File.separator + "images" + File.separator + "logo.png";
+        img = new ImageIcon(imgURL);
+        window.setIconImage(img.getImage());
     }
 
     public static DefaultMutableTreeNode treeCreation(String path) {
@@ -36,12 +28,12 @@ public abstract class Utils {
 
         if (file.exists()) {
             File[] files = file.listFiles();
+            assert files != null;
             if (files.length == 0) {
 
                 //Carpeta vacía (no permitir children)
                 if(file.isDirectory()) {
-                    DefaultMutableTreeNode dn=new DefaultMutableTreeNode(file.getName(), false);
-                    return dn;
+                    return new DefaultMutableTreeNode(file.getName(), false);
                 }
 
             }else{
@@ -59,47 +51,49 @@ public abstract class Utils {
                     }
                 }
             }
-        } else {//el archivo no existe
+        } else { //el archivo no existe
+            JOptionPane.showMessageDialog(Utils.ventana
+                    , "Error: El archivo no existe."
+                    , "Archivo inexistente", JOptionPane.ERROR_MESSAGE);
             return null;
         }
         return tree;
     }
 
-    public static void window() {
-    }
-
     /**
      * ABRE ARCHIVOS
-     * @param file
-     * @param dir
+     * @param file {@link File}
+     * @param dir {@link String}
      */
     public static void abrirArchivo(File file, String dir) {
-        try {
 
+        try {
             //Abrir
             FileReader fr = new FileReader(file);
-            EditorPanel jpEditor = new EditorPanel();
+            EditorPanel jpEditor = new EditorPanel(dir);
 
             if (!fileInTabs(dir)) {
                 //Agregar nueva tab
-                Utils.ventana.getTabsEditorPanel().addTab(dir, jpEditor);
-                jpEditor.getEditorText().read(fr, dir); //Introducir texto al archivo
+                Utils.ventana.getTabsEditorPanel().addTab(file.getName(), jpEditor);
+                jpEditor.getEDITOR_TEXT().read(fr, dir); //Introducir texto al archivo
+                jpEditor.actualizarUndo();
 
                 //Desplazar a la tab abierta
                 Utils.ventana.getTabsEditorPanel().setSelectedIndex(Utils.ventana.getTabsEditorPanel().getTabCount() - 1);
             }
             //Cerrar
             fr.close();
+            } catch (
+            IOException e) {
+                e.printStackTrace();
+            }
 
-        }catch(Exception ex){
-            System.out.println(ex);
-        }
     }
 
     /**
      * Comprueba si el archivo se encuentra en algún tab
-     * @param path
-     * @return
+     * @param path {@link String}
+     * @return (boolean) ¿Está en tabs?
      */
     public static boolean fileInTabs(String path){
 
@@ -110,115 +104,22 @@ public abstract class Utils {
 
         for (int i=0; i < tabCounts; i++)
         {
-            String tabTitle = Utils.ventana.getTabsEditorPanel().getTitleAt(i);
+            if (Utils.ventana.getTabsEditorPanel().getComponentAt(i) instanceof EditorPanel) {
+                EditorPanel editor = (EditorPanel) Utils.ventana.getTabsEditorPanel().getComponentAt(i);
 
-            if (tabTitle.equals(path)){
-                Utils.ventana.getTabsEditorPanel().setSelectedIndex(i);
-                enTabs = true;
-                break;
-            }
-        }
+                String nombreDir = editor.getDirection();
 
+                if (nombreDir.equals(path)){
+                    Utils.ventana.getTabsEditorPanel().setSelectedIndex(i);
+                    enTabs = true;
+                    break;
+                }
+            }else{
+                JOptionPane.showMessageDialog(Utils.ventana
+                        , "No se ha localizado el directorio."
+                        , "Fallo de localización", JOptionPane.ERROR_MESSAGE);
+                }
+}
         return enTabs;
     }
-
-    /**
-     * OTRO
-     */
-    //EDITOR DOCUMENT
-    /*@Data
-    public static class EditorDocument {
-        static private StyleContext cont;
-        static private AttributeSet attr;
-        static private AttributeSet attrTitle;
-        static private DefaultStyledDocument doc;
-
-        public EditorDocument(){
-            refrescarDoc(Color.WHITE);
-        }
-
-        public static DefaultStyledDocument getDoc(){
-            return doc;
-        }
-
-        public static void refrescarDoc(Color titleColor){
-            //Crear editor
-            cont = StyleContext.getDefaultStyleContext();
-            attr = cont.addAttribute(cont.getEmptySet(), StyleConstants.Foreground, Color.ORANGE);
-            attrTitle = cont.addAttribute(cont.getEmptySet(), StyleConstants.Foreground, titleColor);
-
-            //Crear estilo de documento (palabras clave coloreadas)
-            doc = new DefaultStyledDocument() {
-
-                public void insertString (int offset, String str, AttributeSet a) throws BadLocationException {
-                    super.insertString(offset, str, a);
-
-                    String text = getText(0, getLength());
-                    int before = findLastNonWordChar(text, offset);
-                    if (before < 0) before = 0;
-                    int after = findFirstNonWordChar(text, offset + str.length());
-                    int wordL = before;
-                    int wordR = before;
-
-                    while (wordR <= after) {
-                        if (wordR == after || String.valueOf(text.charAt(wordR)).matches("\\W")) {
-                            if (text.substring(wordL, wordR).matches("(\\W)*(private|public|protected|if|else|while|false|true)"))
-                                setCharacterAttributes(wordL, wordR - wordL, attr, false);
-                            else {
-                                setCharacterAttributes(wordL, wordR - wordL, attrTitle, false);
-                            }
-                            wordL = wordR;
-                        }
-                        wordR++;
-                    }
-                }
-
-                public void updateString(int offset, String str, AttributeSet a) throws BadLocationException{
-
-                }
-
-                public void remove (int offs, int len) throws BadLocationException {
-                    super.remove(offs, len);
-
-                    String text = getText(0, getLength());
-                    int before = findLastNonWordChar(text, offs);
-                    if (before < 0) before = 0;
-                    int after = findFirstNonWordChar(text, offs);
-
-                    if (text.substring(before, after).matches("(\\W)*(private|public|protected)")) {
-                        setCharacterAttributes(before, after - before, attr, false);
-                    } else {
-                        setCharacterAttributes(before, after - before, attrTitle, false);
-                    }
-                }
-
-
-            };
-        }
-
-        //Métodos necesarios para el correcto funcionamiento de la
-        //asignación de color a ciertas palabras
-        private static int findLastNonWordChar(String text, int index) {
-            while (--index >= 0) {
-                if (String.valueOf(text.charAt(index)).matches("\\W")) {
-                    break;
-                }
-            }
-            return index;
-        }
-
-        private static int findFirstNonWordChar(String text, int index) {
-            while (index < text.length()) {
-                if (String.valueOf(text.charAt(index)).matches("\\W")) {
-                    break;
-                }
-                index++;
-            }
-            return index;
-        }
-
-
-
-    }*/
 }
-

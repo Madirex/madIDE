@@ -1,14 +1,11 @@
-package com.madirex.windows;
+package com.madirex.View;
 
 import com.madirex.components.EditorPanel;
-import com.madirex.components.TerminalPanel;
 import com.madirex.util.Utils;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.tree.DefaultMutableTreeNode;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 
 public class WindowOpenSave extends JFileChooser {
@@ -20,7 +17,7 @@ public class WindowOpenSave extends JFileChooser {
         }
     }
 
-    private void inicializeWindow() {
+    private void initWindow() {
         this.setCurrentDirectory(new File(System.getProperty("user.home")));
 
         //Agregar filtro java
@@ -29,10 +26,10 @@ public class WindowOpenSave extends JFileChooser {
     }
 
     public void guardar(){
-        boolean existe = false;
+        boolean existe;
 
-        //Revisar si existe
-        String nombreDir = Utils.ventana.getTabsEditorPanel().getTitleAt(Utils.ventana.getTabsEditorPanel().getSelectedIndex());
+        String nombreDir = Utils.ventana.getActualEditorPanel().getDirection();
+
         File file = new File(nombreDir);
         existe = file.exists();
 
@@ -47,7 +44,12 @@ public class WindowOpenSave extends JFileChooser {
 
                 //Cambiar title a la ventana
                 int index = Utils.ventana.getTabsEditorPanel().getSelectedIndex();
-                Utils.ventana.getTabsEditorPanel().setTitleAt(index, file.getPath());
+                Utils.ventana.getTabsEditorPanel().setTitleAt(index, file.getName());
+
+                Utils.ventana.getActualEditorPanel().setDirection(file.getPath());
+                //panel.setDirection("* " + panel.getTreeInfo());
+
+
             } catch (Exception ex){
                 ex.printStackTrace();
             }
@@ -58,7 +60,7 @@ public class WindowOpenSave extends JFileChooser {
     }
 
     public void guardarComo(){
-        inicializeWindow();
+        initWindow();
         if (this.showSaveDialog(Utils.ventana) == JFileChooser.APPROVE_OPTION) {
             try {
                 crearArchivo(false);
@@ -82,8 +84,7 @@ public class WindowOpenSave extends JFileChooser {
             else{
                 int confirmado = JOptionPane.showConfirmDialog(Utils.ventana, "El archivo ya existe. ¿Deseas sobreescribirlo?");
 
-                if (JOptionPane.OK_OPTION == confirmado) {
-                } else {
+                if (JOptionPane.OK_OPTION != confirmado) {
                     proceder = false;
                 }
             }
@@ -99,12 +100,14 @@ public class WindowOpenSave extends JFileChooser {
                 String formato = this.getFileFilter().getDescription();
 
                 FileWriter fw;
-                String tab = this.getSelectedFile().getPath();
+                String dir = this.getSelectedFile().getPath();
+                String nombreArchivo = file.getName();
 
                 //Agregar formato si no lo tiene
                 if (!tieneFormato(file.getName(), formato)) {
                     fw = new FileWriter(file + formato);
-                    tab += formato;
+                    dir += formato;
+                    nombreArchivo += formato;
                 } else {
                     fw = new FileWriter(file);
                 }
@@ -115,15 +118,18 @@ public class WindowOpenSave extends JFileChooser {
 
                 if (nuevo) {
                     //Si es un archivo nuevo (Nueva tab)
-                    EditorPanel jpEditor = new EditorPanel();
-                    Utils.ventana.getTabsEditorPanel().addTab(tab, jpEditor);
+                    EditorPanel jpEditor = new EditorPanel(dir);
+                    Utils.ventana.getTabsEditorPanel().addTab(file.getName(), jpEditor);
 
                     //Desplazar a la tab abierta
                     Utils.ventana.getTabsEditorPanel().setSelectedIndex(Utils.ventana.getTabsEditorPanel().getTabCount() - 1);
                 } else {
                     //Si es un archivo existente (Guardar como)
                     int index = Utils.ventana.getTabsEditorPanel().getSelectedIndex();
-                    Utils.ventana.getTabsEditorPanel().setTitleAt(index, tab);
+                    Utils.ventana.getTabsEditorPanel().setTitleAt(index, nombreArchivo);
+
+                    Utils.ventana.getActualEditorPanel().setDirection(dir);
+
                 }
             }
 
@@ -133,7 +139,7 @@ public class WindowOpenSave extends JFileChooser {
     }
 
     public void nuevo(){
-        inicializeWindow();
+        initWindow();
         if (this.showSaveDialog(Utils.ventana) == JFileChooser.APPROVE_OPTION) {
             try {
                 crearArchivo(true);
@@ -144,19 +150,12 @@ public class WindowOpenSave extends JFileChooser {
     }
 
     public boolean tieneFormato(String nombre, String formato){
-
-        boolean tieneFormato = false;
-
-        if (nombre.endsWith(formato)){
-            return true;
-        }
-
-        return tieneFormato;
+        return nombre.endsWith(formato);
     }
 
 
     public void abrir() {
-        inicializeWindow();
+        initWindow();
 
         if (this.showOpenDialog(Utils.ventana) == JFileChooser.APPROVE_OPTION) {
             try {
@@ -183,8 +182,6 @@ public class WindowOpenSave extends JFileChooser {
 
             if (JOptionPane.OK_OPTION == confirmado) {
                 guardar();
-            } else {
-                //No guardar los cambios
             }
         }
     }

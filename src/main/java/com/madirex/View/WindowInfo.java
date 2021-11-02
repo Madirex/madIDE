@@ -1,4 +1,4 @@
-package com.madirex.windows;
+package com.madirex.View;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,7 +16,7 @@ public class WindowInfo extends JDialog {
         this.setResizable(false);
         this.setTitle("Acerca de MadIDE");
 
-        //JPANEL Main panel
+        //Main panel (JPanel)
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
 
@@ -44,7 +44,7 @@ public class WindowInfo extends JDialog {
 
             //Copyright
             JLabel copyright = new JLabel();
-            copyright.setText("Madirex- Todos los derechos reservados");
+            copyright.setText("Madirex - Todos los derechos reservados");
             copyright.setBorder(BorderFactory.createEmptyBorder(0, 0,
                     5, 0)); //Crear márgenes
             copyright.setAlignmentX(JLabel.CENTER_ALIGNMENT); //CENTRAR
