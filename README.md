@@ -1,5 +1,5 @@
 # madIDE
-Mi IDE
+Mi IDE - 
 Estos días he estado desarrollando un pequeño IDE (un editor de código simple). Tiene algunos fallos y la estructuración de código es bastante mejorable. Aún así, estoy bastante orgulloso con el resultado teniendo en cuenta que es la primera vez que hago una aplicación de este estilo 🧐.
 
 # Información
